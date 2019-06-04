@@ -218,6 +218,7 @@ environment_coverage <- function(
 #' @param function_exclusions a vector of regular expressions matching function
 #' names to exclude. Example `print\\\.` to match print methods.
 #' @param code A character vector of additional test code to run.
+#' @param scripts A character vector of script filenames to run.
 #' @param ... Additional arguments passed to [tools::testInstalledPackage()].
 #' @param exclusions \sQuote{Deprecated}, please use \sQuote{line_exclusions} instead.
 #' @seealso [exclusions()] For details on excluding parts of the
@@ -232,6 +233,7 @@ package_coverage <- function(path = ".",
                              line_exclusions = NULL,
                              function_exclusions = NULL,
                              code = character(),
+                             scripts = character(),
                              ...,
                              exclusions) {
 
@@ -355,6 +357,13 @@ package_coverage <- function(path = ".",
       # We always run the commands file (even if empty) to load the package and
       # initialize all the counters to 0.
       run_commands(pkg, tmp_lib, code)
+
+      for (sFileName in scripts) {
+        cmd <- paste(shQuote(file.path(R.home("bin"), "Rscript")),
+                    shQuote(sFileName))
+        cat(paste0(cmd, "\n"))
+        system(cmd)
+      }
     },
     message = function(e) if (quiet) invokeRestart("muffleMessage") else e,
     warning = function(e) if (quiet) invokeRestart("muffleWarning") else e)
