@@ -235,7 +235,7 @@ package_coverage <- function(path = ".",
                              line_exclusions = NULL,
                              function_exclusions = NULL,
                              code = character(),
-                             scriptArgs = character(),
+                             scripts = character(),
                              ...,
                              exclusions) {
 
