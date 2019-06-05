@@ -234,6 +234,7 @@ package_coverage <- function(path = ".",
                              function_exclusions = NULL,
                              code = character(),
                              scripts = character(),
+                             scriptArgs = character(),
                              ...,
                              exclusions) {
 
@@ -359,8 +360,10 @@ package_coverage <- function(path = ".",
       run_commands(pkg, tmp_lib, code)
 
       for (sFileName in scripts) {
-        cmd <- paste(shQuote(file.path(R.home("bin"), "Rscript")),
-                    shQuote(sFileName))
+        cmd <- paste(shQuote(file.path(R.home("bin"), "Rscript")), shQuote(sFileName))
+        if (length(scriptArgs) > 0) {
+          cmd <- paste(cmd, paste0(shQuote(scriptArgs), collapse = " "))
+        }
         cat(paste0(cmd, "\n"))
         system(cmd)
       }
