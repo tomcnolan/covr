@@ -218,7 +218,9 @@ environment_coverage <- function(
 #' @param function_exclusions a vector of regular expressions matching function
 #' names to exclude. Example `print\\\.` to match print methods.
 #' @param code A character vector of additional test code to run.
-#' @param scripts A character vector of script filenames to run.
+#' @param scripts A character vector of additional script filenames with corresponding
+#' optional command-line arguments to run. Within each string, the script filename and
+#' its optional arguments must be individually quoted with `shQuote` if needed.
 #' @param ... Additional arguments passed to [tools::testInstalledPackage()].
 #' @param exclusions \sQuote{Deprecated}, please use \sQuote{line_exclusions} instead.
 #' @seealso [exclusions()] For details on excluding parts of the
@@ -233,7 +235,6 @@ package_coverage <- function(path = ".",
                              line_exclusions = NULL,
                              function_exclusions = NULL,
                              code = character(),
-                             scripts = character(),
                              scriptArgs = character(),
                              ...,
                              exclusions) {
@@ -359,11 +360,8 @@ package_coverage <- function(path = ".",
       # initialize all the counters to 0.
       run_commands(pkg, tmp_lib, code)
 
-      for (sFileName in scripts) {
-        cmd <- paste(shQuote(file.path(R.home("bin"), "Rscript")), shQuote(sFileName))
-        if (length(scriptArgs) > 0) {
-          cmd <- paste(cmd, paste0(shQuote(scriptArgs), collapse = " "))
-        }
+      for (script in scripts) {
+        cmd <- paste(shQuote(file.path(R.home("bin"), "Rscript")), script)
         cat(paste0(cmd, "\n"))
         system(cmd)
       }
